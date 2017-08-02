@@ -1,0 +1,23 @@
+https://www.bbc.co.uk/music/tracks/find/6music
+
+this site shows songs played in the last hour
+
+use the archive which has a page per hour for whole day
+
+-Program to archive daily playlist as txt file
+
+scrape the page source to find title and artist of each track (do this every hour between 7am and 7pm), use bs4
+
+append title and artist to a list (if not in the last 3 entries in the list - there are overlaps between the hours) use the format "title - artist"
+
+list to string, each item separated by newline, write to txt file
+
+save txt file to disk
+
+do this daily (M-F)
+
+
+-Separate program to convert to playlist in spotify
+
+use soundiiz website to generate spotify playlist from txt file which will auto add to spotify playlists, use selenium
+
