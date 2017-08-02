@@ -36,6 +36,7 @@ for i in ('7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM
 	
 # append to trackList
 	for j in range(len(tracks)):
+		if artists[j].getText() + '-' + tracks[j].getText() not in trackList: # check for duplicates
 			trackList.append(artists[j].getText() + '-' + tracks[j].getText())
 			
 
@@ -44,22 +45,20 @@ stripList = []
 for k in trackList:
 	stripList.append(k.strip())
 
-#copy to clipboard
-pyperclip.copy(pprint.pformat(stripList, width=200))
-print(str(len(stripList)) + ' tracks copied to clipboard')
-print('Now paste into a new notepad++ window')
-print("""Find: (\[)|(\])|(',)|(")|(,)|(\(.*\))|(\&.*-)""")
-print("""Replace with: (?1 )(?2 )(?3 )(?4 )(?5 )(?6 )(?7-)""")
-print("""Then find: ^..(.*.\\r\\n)""") # just the first 2 characters, gets the first apostrophe
-print("""And replace with: \\1""")
-print('Then copy that and import as a playlist on soundiiz.com')
-print('Then run the deduplicator at: https://jmperezperez.com/spotify-dedup/')
 
-'''	
-# TODO convert list to string separated by newlines and write to txt file
-textFile = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'a')
+# convert list to string separated by newlines and write to txt file
+textFile = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'w', encoding='utf8')
 for item in stripList:
-	textFile.write('%s\n' % item.encode('ascii', 'ignore')) # deal with random characters that are in the list - THIS GIVES THE PROBLEM THAT TRACKNAMES ARE NOT INTERPRETED CORRECTLY BY SOUNDIIZ PLAYLIST MAKER
+	textFile.write('%s\n' % item)
 textFile.close()
-'''
 
+# open the text file to copy to clipboard for minor changes in n++ and then upload to soundiiz.com
+file = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'r', encoding='utf-8').read()
+pyperclip.copy(file)
+print(str(len(stripList)) + ' tracks copied to clipboard')
+
+# instruct user on next steps
+print('Now paste into a new notepad++ window')
+print("""Find: (\(.*\))|(\&.*-)""") # anything in parentheses, anything with & in the artist
+print("""Replace with: (?1 )(?2-)""")
+print('Then copy that and import playlist on soundiiz.com')
