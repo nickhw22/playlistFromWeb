@@ -47,8 +47,8 @@ for k in trackList:
 	stripList.append(k.strip())
 
 # convert list to string separated by newlines and write to txt file
-print('Adding to file: C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt...')
-textFile = open('Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'w', encoding='utf8')
+print('Adding to file: Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt...')
+textFile = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'w', encoding='utf8')
 for item in stripList:
 	textFile.write('%s\n' % item)
 textFile.close()
