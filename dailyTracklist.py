@@ -3,7 +3,7 @@
 
 import bs4, requests, datetime, os, pyperclip, re
 
-# generate baseURL for yesterdays pages for example:  https://www.bbc.co.uk/music/tracks/find/6music/2017/07/15/7AM
+# generate baseURL for yesterday's pages for example:  https://www.bbc.co.uk/music/tracks/find/6music/2017/07/15/7AM
 
 # get yesterdays date and covert to tuple
 yesterday = list((datetime.datetime.today() - datetime.timedelta(days=1)).timetuple())
@@ -35,17 +35,16 @@ for i in ('7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM
 	artists = soup.select( '.music-track__artist')
 	
 # append to trackList
+print('Removing duplicates...')
 	for j in range(len(tracks)):
 		if artists[j].getText() + '-' + tracks[j].getText() not in trackList: # check for duplicates
 			trackList.append(artists[j].getText() + '-' + tracks[j].getText())
 			
-
 # strip whitespace from list items
-print('Removing duplicates and stripping whitespace...')
+print('Stripping whitespace...')
 stripList = []
 for k in trackList:
 	stripList.append(k.strip())
-
 
 # convert list to string separated by newlines and write to txt file
 print('Adding to file: C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt...')
@@ -56,11 +55,11 @@ textFile.close()
 
 # open the text file to remove some problematic parts of text
 file = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'r', encoding='utf8').read()
-print('Removing text within parentheses...')
+print('Cleaning list ready for upload...')
 file = re.sub(r'\(.*\)', '', file) # anything in parentheses
-print('Removing any & x in the artist...\n')
 file = re.sub(r'\&.*-', '-', file) # anything with & in the artist
-
+file = re.sub(r'\nthe\sxx.*','', file, flags=re.I) # anything by the xx :(
+file = re.sub(r'\ntricky\s-\sthe\sonly\sway','', file, flags=re.I) # other rubbish
 # copy to clipboard (TODO upload to soundiiz.com)
 pyperclip.copy(file)
 print(str(len(stripList)) + ' tracks copied to clipboard')
