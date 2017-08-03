@@ -1,5 +1,5 @@
 #! python3
-# dailyTracklist.py - scrapes tracks played yesterday on BBC 6Music from 7am-7pm and outputs a text file of the tracklist
+# dailyTracklist.py - scrapes tracks played yesterday on BBC 6Music from 5am-7pm and outputs a text file of the tracklist
 
 import bs4, requests, datetime, os, pyperclip, re
 
@@ -21,11 +21,11 @@ else:
 	
 baseURL = 'https://www.bbc.co.uk/music/tracks/find/6music/' + year + '/' + month + '/' + day + '/'
 	
-# loop over webpages from 7am-7pm yesterday and request html source of tracks played page for yesterday at a certain time
-print('Fetching track data played on BBC 6Music between 7AM and 7PM yesterday: ' + year + '/' + month + '/' + day + '...')
+# loop over webpages from 5am-7pm yesterday and request html source of tracks played page for yesterday at a certain time
+print('Fetching artist & title data for tracks played on\nBBC 6Music, 5AM-7PM, yesterday (' + year + '/' + month + '/' + day + ')' + '...')
 trackList= []
 
-for i in ('7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM'):
+for i in ('5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM'):
 	res = requests.get(baseURL + i)
 	res.raise_for_status()
 	soup = bs4.BeautifulSoup(res.text, 'lxml')
@@ -35,11 +35,11 @@ for i in ('7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM
 	artists = soup.select( '.music-track__artist')
 	
 # append to trackList
-print('Removing duplicates...')
 	for j in range(len(tracks)):
 		if artists[j].getText() + '-' + tracks[j].getText() not in trackList: # check for duplicates
 			trackList.append(artists[j].getText() + '-' + tracks[j].getText())
-			
+print('Removing duplicates...')			
+
 # strip whitespace from list items
 print('Stripping whitespace...')
 stripList = []
@@ -48,21 +48,21 @@ for k in trackList:
 
 # convert list to string separated by newlines and write to txt file
 print('Adding to file: C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt...')
-textFile = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'w', encoding='utf8')
+textFile = open('Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'w', encoding='utf8')
 for item in stripList:
 	textFile.write('%s\n' % item)
 textFile.close()
 
 # open the text file to remove some problematic parts of text
 file = open('C:\\Users\\Owner\\Downloads\\BBC.6Music.Tracklists.Archive\\' + year + '.' + month + '.' + day + '.txt', 'r', encoding='utf8').read()
-print('Cleaning list ready for upload...')
+print('Cleaning list ready for clipboard...')
 file = re.sub(r'\(.*\)', '', file) # anything in parentheses
 file = re.sub(r'\&.*-', '-', file) # anything with & in the artist
 file = re.sub(r'\nthe\sxx.*','', file, flags=re.I) # anything by the xx :(
 file = re.sub(r'\ntricky\s-\sthe\sonly\sway','', file, flags=re.I) # other rubbish
-# copy to clipboard (TODO upload to soundiiz.com)
+# copy to clipboard
 pyperclip.copy(file)
-print(str(len(stripList)) + ' tracks copied to clipboard')
+print('Copying ' + str(len(stripList)) + ' tracks to clipboard...\nDone!\n')
 
 # instruct user on next step
-print('Now you can import a new playlist on soundiiz.com\n\nEnjoy a new playlist every day with 6Music Daily Tracklist!')
+print('Now you can import this a new playlist on soundiiz.com\n\nEnjoy a new playlist every day with 6Music Daily Tracklist!\nThanks for using!\n')
